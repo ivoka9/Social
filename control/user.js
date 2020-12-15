@@ -52,11 +52,28 @@ router.post("/create", upload.none(), async (req, res) => {
       username: req.body.username,
       password: req.body.password,
     };
+    if (
+      db.User.findOne({ username: req.body.username }) != {} ||
+      db.User.findOne({ username: req.body.username }) != null
+    ) {
+      res.status(403).json("User exists");
+      res.end();
+    }
     await db.User.create(newUser);
     res.status(200).json(newUser);
   } catch (err) {
     console.log(err);
     res.status(500).json("err");
+  }
+});
+
+router.get("/finduser/:id", async (req, res) => {
+  const user = await db.User.findOne({ username: req.params.id });
+  if (user === null || user === {}) {
+    res.status(200).json("User not found");
+    res.end();
+  } else {
+    res.status(200).json(user);
   }
 });
 

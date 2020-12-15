@@ -1,10 +1,20 @@
 // =======================================
 //              DEPENDENCIES
 // =======================================
-const express = require("express");
-const app = express();
+var app = require("express")();
+var http = require("http").createServer(app);
+var io = require("socket.io")(http, {
+  cors: true,
+});
 const cors = require("cors");
+
+app.use(cors());
+
 const sessions = require("express-session");
+
+http.listen(4000, () => {
+  console.log("listening on *:3000");
+});
 
 require("dotenv").config();
 
@@ -21,17 +31,16 @@ app.use(
     cookie: { secure: true },
   })
 );
-app.use(cors());
-app.use(express.json());
-app.use("/", constrol.user);
+app.use("/group", constrol.group);
 
-// =======================================
-//      MONGOOSE CONNECTION LOGIC
-// =======================================
+app.use("/", constrol.user);
 
 // =======================================
 //              LISTENER
 // =======================================
-app.listen(PORT, () => {
-  console.log(`listening on PORT: ${PORT}`);
+io.on("connection", (socket) => {
+  socket.on("join", (name) => {
+    console.log(name.name);
+  });
+  socket.emit("add");
 });
