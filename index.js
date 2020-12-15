@@ -36,6 +36,12 @@ app.use("/group", constrol.group);
 app.use("/", constrol.user);
 
 // =======================================
+//      MONGOOSE CONNECTION LOGIC
+// =======================================
+app.get("/", (req, res) => {
+  res.render("index.ejs");
+});
+// =======================================
 //              LISTENER
 // =======================================
 io.on("connection", (socket) => {
