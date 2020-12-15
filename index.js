@@ -12,7 +12,7 @@ app.use(cors());
 
 const sessions = require("express-session");
 
-http.listen(4000, () => {
+http.listen(process.env.PORT, () => {
   console.log("listening on *:3000");
 });
 
