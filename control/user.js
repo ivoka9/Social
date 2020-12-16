@@ -63,7 +63,7 @@ router.post("/create", upload.none(), async (req, res) => {
     res.status(200).json(newUser);
   } catch (err) {
     console.log(err);
-    res.status(500).json("err");
+    res.status(500).json(err);
   }
 });
 
