@@ -52,15 +52,14 @@ router.post("/create", upload.none(), async (req, res) => {
       username: req.body.username,
       password: req.body.password,
     };
-    if (
-      db.User.findOne({ username: req.body.username }) != {} ||
-      db.User.findOne({ username: req.body.username }) != null
-    ) {
-      res.status(403).json("User exists");
+    const user = await db.User.findOne({ username: req.body.username });
+    if (user != null) {
+      res.status(403).json(user);
       res.end();
+    } else {
+      await db.User.create(newUser);
+      res.status(200).json(newUser);
     }
-    await db.User.create(newUser);
-    res.status(200).json(newUser);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
