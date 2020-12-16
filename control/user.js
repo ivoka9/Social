@@ -16,6 +16,18 @@ router.post("/logout", async (req, res) => {
   res.end();
 });
 
+router.get("/highscore", async (req, res) => {
+  const users = await db.User.find({});
+  let scores = [];
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].highscore)
+      scores.push({ name: users[i].name, score: users[i].highscore });
+  }
+  scores.sort((a, b) => b.score - a.score);
+  scores.length = 6;
+  res.status(200).json(scores);
+});
+
 router.post("/highscore/:user", upload.none(), async (req, res) => {
   try {
     const user = await db.User.findOne({ username: req.params.user });
