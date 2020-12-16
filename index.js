@@ -1,11 +1,9 @@
 // =======================================
 //              DEPENDENCIES
 // =======================================
-var app = require("express")();
-var http = require("http").createServer(app);
-var io = require("socket.io")(http, {
-  cors: true,
-});
+const express = require("express");
+const app = express();
+
 const cors = require("cors");
 
 const PORT = process.env.PORT;

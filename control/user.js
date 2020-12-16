@@ -16,14 +16,28 @@ router.post("/logout", async (req, res) => {
   res.end();
 });
 
+router.post("/highscore/:user", upload.none(), async (req, res) => {
+  try {
+    const user = await db.User.findOne({ username: req.params.user });
+    const highscore = Number(req.body.score);
+    console.log(user, highscore);
+    if (user.highscore < highscore) {
+      user.highscore = req.body.score;
+      user.save();
+      res.status(200).json(user);
+    } else {
+      res.status(200).json("cant beat your highscore");
+    }
+  } catch (err) {
+    console.log(err);
+    res.send("err");
+  }
+});
+
 router.post("/login", upload.none(), async (req, res) => {
   try {
     const user = await db.User.findOne({ username: req.body.username });
-    if (user.password === req.body.password) {
-      req.session._id = user._id;
-      req.session.username = user.username;
-      req.session.name = user.name;
-      console.log(req.session);
+    if (user != null && user.password === req.body.password) {
       res.status(200).json(user);
       res.end();
     } else {
@@ -51,6 +65,7 @@ router.post("/create", upload.none(), async (req, res) => {
       name: req.body.name,
       username: req.body.username,
       password: req.body.password,
+      highscore: 0,
     };
     const user = await db.User.findOne({ username: req.body.username });
     if (user != null) {
