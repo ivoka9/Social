@@ -103,15 +103,18 @@ router.get("/finduser/:id", async (req, res) => {
   }
 });
 
-router.post("/addfriend/:id", async (req, res) => {
+router.post("/addfriend/:id", upload.none(), async (req, res) => {
   try {
-    const user = await db.User.findById(req.session._id);
+    const user = await db.User.findOne({ username: req.body.username });
     if (user === null) req.status(404).json("User not Found");
-    const friend = await db.User.findById(req.params.id);
+    const friend = await db.User.findOne({ username: req.params.id });
     console.log(friend);
     if (friend === null) req.status(404).json("Friend not Found");
     console.log(user);
-    user.friends.push(req.params.id);
+    if (user.friends.indexOf(friend._id) === -1) {
+      user.friends.push(friend._id);
+    }
+
     await user.save();
     res.status(200).json("Friend added");
   } catch (err) {
